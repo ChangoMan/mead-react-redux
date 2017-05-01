@@ -2,15 +2,8 @@ var redux = require('redux');
 
 console.log('Starting redux example');
 
-var stateDefault = {
-    name: 'Anonymous',
-    hobbies: [],
-    movies: []
-}
-
-var nextHobbyId = 1;
-var nextMovieId = 1;
-
+// Name reducer and action generators
+// ---------
 var nameReducer = (state = 'Anonymous', action) => {
     switch (action.type) {
         case 'CHANGE_NAME':
@@ -20,6 +13,16 @@ var nameReducer = (state = 'Anonymous', action) => {
     }
 }
 
+var changeName = (name) => {
+    return {
+        type: 'CHANGE_NAME',
+        name: name
+    }
+}
+
+// Hobbies reducer and action generators
+// ---------
+var nextHobbyId = 1;
 var hobbiesReducer = (state = [], action) => {
     switch (action.type) {
         case 'ADD_HOBBY':
@@ -37,6 +40,22 @@ var hobbiesReducer = (state = [], action) => {
     }
 }
 
+var addHobby = (hobby) => {
+    return {
+        type: 'ADD_HOBBY',
+        hobby: hobby
+    }
+}
+var removeHobby = (id) => {
+    return {
+        type: 'REMOVE_HOBBY',
+        id: id
+    }
+}
+
+// Movies reducer and action generators
+// ---------
+var nextMovieId = 1;
 var moviesReducer = (state = [], action) => {
     switch (action.type) {
         case 'ADD_MOVIE':
@@ -55,6 +74,20 @@ var moviesReducer = (state = [], action) => {
     }
 }
 
+var addMovie = (movie, genre) => {
+    return {
+        type: 'ADD_MOVIE',
+        movie: movie,
+        genre: genre
+    }
+}
+var removeMovie = (id) => {
+    return {
+        type: 'REMOVE_MOVIE',
+        id: id
+    }
+}
+
 var reducer = redux.combineReducers({
     name: nameReducer,
     hobbies: hobbiesReducer,
@@ -66,52 +99,21 @@ var store = redux.createStore(reducer);
 // Subscribe to changes
 store.subscribe(() => {
     var state = store.getState();
-    console.log('Name is', state.name);
     console.log('New State', state)
 });
 
 var currentState = store.getState();
 console.log('currentState', currentState);
 
-var action = {
-    type: 'CHANGE_NAME',
-    name: 'Hunter'
-};
-store.dispatch(action);
+store.dispatch(changeName('Hunter'));
 
-store.dispatch({
-    type: 'ADD_HOBBY',
-    hobby: 'Running'
-});
+store.dispatch(addHobby('Running'));
+store.dispatch(addHobby('Walking'));
+store.dispatch(removeHobby(2));
 
-store.dispatch({
-    type: 'ADD_HOBBY',
-    hobby: 'Walking'
-});
+store.dispatch(addMovie('Cool Runnings', 'comedy'));
 
-store.dispatch({
-    type: 'REMOVE_HOBBY',
-    id: 2
-});
+store.dispatch(changeName('Mary'));
 
-store.dispatch({
-    type: 'ADD_MOVIE',
-    movie: 'Cool Runnings',
-    genre: 'comedy'
-});
-
-store.dispatch({
-    type: 'CHANGE_NAME',
-    name: 'Mary'
-});
-
-store.dispatch({
-    type: 'ADD_MOVIE',
-    movie: 'Matrix',
-    genre: 'action'
-});
-
-store.dispatch({
-    type: 'REMOVE_MOVIE',
-    id: 1
-});
+store.dispatch(addMovie('Matrix', 'action'));
+store.dispatch(removeMovie(1));
